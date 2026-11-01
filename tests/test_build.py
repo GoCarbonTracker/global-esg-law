@@ -40,11 +40,28 @@ def test_build_trailers_order_and_rebuild(tmp_path):
         for commit in commits:
             body = subprocess.check_output(["git", "-C", str(repo), "show", "-s", "--format=%B", commit], text=True)
             trailers = dict(line.split(": ", 1) for line in body.splitlines() if ": " in line)
-            assert {"Instrument", "Source-url", "In-force", "Kind", "Licence"} <= trailers.keys()
+            assert {"Instrument", "Source-url", "In-force", "Kind", "Licence", "Jurisdiction", "Instrument-id"} <= trailers.keys()
+            assert (trailers["Jurisdiction"], trailers["Instrument-id"]) == ("EU", "law" if trailers["In-force"] == "1965-01-02" else "law2")
             history.append((trailers["In-force"], trailers["Instrument"]))
         assert history == [("1965-01-02", "Scope Title"), ("2020-03-04", "Scope Title")]
         histories.append(history)
     assert histories[0] == histories[1]
+
+
+def test_branch_build_is_orphan_and_rebuild_equal(tmp_path):
+    fixture(tmp_path)
+    def snapshot():
+        log = subprocess.check_output(["git", "-C", str(tmp_path), "log", "--first-parent", "--reverse", "--format=%an|%ad|%B", "--date=iso-strict", "history"], text=True)
+        tree = subprocess.check_output(["git", "-C", str(tmp_path), "rev-parse", "history^{tree}"], text=True)
+        return log, tree
+    build.build(tmp_path, branch="history")
+    first = snapshot()
+    build.build(tmp_path, branch="history")
+    assert snapshot() == first
+    assert subprocess.check_output(["git", "-C", str(tmp_path), "rev-list", "--count", "history"], text=True).strip() == "2"
+    assert subprocess.run(["git", "-C", str(tmp_path), "rev-parse", "HEAD"], capture_output=True).returncode != 0  # nothing committed on the current branch
+    assert subprocess.check_output(["git", "-C", str(tmp_path), "show", "history:records/EU/law/old.json"], text=True)
+    assert subprocess.check_output(["git", "-C", str(tmp_path), "status", "--porcelain"], text=True) == "?? records/\n?? register/\n?? sources.json\n"
 
 
 def test_trailers_come_from_scope_json(tmp_path):
