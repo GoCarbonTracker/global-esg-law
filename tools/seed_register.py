@@ -18,6 +18,8 @@ def main(source):
             raise ValueError("missing required columns: " + ", ".join(sorted(missing)))
         rows = list(reader)
     target = ROOT / "register" / "register.csv"
+    if target.exists():
+        raise SystemExit(f"{target} exists; refusing to overwrite (it holds per-instrument rows the seed lacks)")
     target.parent.mkdir(parents=True, exist_ok=True)
     with target.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=reader.fieldnames, lineterminator="\n")
