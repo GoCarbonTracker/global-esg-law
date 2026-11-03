@@ -79,6 +79,6 @@ Tools, tests, the register and the documentation are CC0 1.0 (`LICENSE`). Each l
 
 ## Cite
 
-global-esg-law, https://github.com/GoCarbonTracker/global-esg-law, version `09f7ed09dda2050bb8cc4893f7a5dbf4a1922f5e` (`history` branch, built 2026-11-02, head commit dated 2027-10-01 because it is the newest-dated record, Financial Instruments and Exchange Act of Japan, not yet in force), record Directive (EU) 2022/2464 (CSRD), in force 2026-03-18.
+global-esg-law, https://github.com/GoCarbonTracker/global-esg-law, version `e514a2e1e2a09b7086abeae2f50d8ad7baf6db64` (`history` branch, built 2026-11-03, head commit dated 2034-01-01 because it is the newest-dated record, Estonia's Ambient Air Protection Act chapter on emission allowance trading, not yet in force), record Directive (EU) 2022/2464 (CSRD), in force 2026-03-18.
 
 The official source in the `Source-url` trailer is the authority and this repository is a copy.
